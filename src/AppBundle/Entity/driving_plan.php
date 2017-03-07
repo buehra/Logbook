@@ -9,6 +9,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 
 /**
@@ -36,13 +37,13 @@ class driving_plan
 
     /**
      * One Damage has One driver.
-     * @OneToOne(targetEntity="driver")
+     * @ManyToOne(targetEntity="driver")
      */
     private $driver;
 
     /**
      * One Damage has One Boat.
-     * @OneToOne(targetEntity="Boat")
+     * @ManyToOne(targetEntity="Boat")
      */
     private $boat;
 

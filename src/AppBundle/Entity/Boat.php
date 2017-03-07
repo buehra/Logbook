@@ -34,6 +34,11 @@ class Boat
     private $model;
 
     /**
+     * @ORM\Column(type="string", length=200)
+     */
+    private $fullname;
+
+    /**
      * @ORM\Column(type="string", length=100)
      */
     private $serrialnumber;
@@ -100,6 +105,23 @@ class Boat
     public function getModel()
     {
         return $this->model;
+    }
+
+    /**
+     * @param $fullname
+     * @return $this
+     */
+    public function setFullname($fullname)
+    {
+        $this->fullname = $fullname;
+
+        return $this;
+    }
+
+
+    public function getFullname()
+    {
+        return $this->fullname;
     }
 
     /**

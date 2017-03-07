@@ -1,13 +1,58 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Dashboard</h1>
+    <h1>Tanken</h1>
 
+    <table id="refuel_table" class="table table-striped table-bordered">
+        <thead>
+        <tr class="bg-info">
+            <th>Fahrer:</th>
+            <th>Boat:</th>
+            <th>Datum:</th>
+            <th>Tankstelle:</th>
+            <th>Liter:</th>
+            <th>Kosten:</th>
+            <th class="text-right text-nowrap">
+                <a class="btn btn-default btn-sm" href="{{ path('refuel_create') }}" title="Create">
+                    <i class="fa fa-plus" aria-hidden="true"> Erstellen</i>
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for refuel in refuels %}
+            <tr>
+                <td>{{ refuel.driver.displayname }}</td>
+                <td>{{ refuel.boat.fullname }}</td>
+                <td>{{ refuel.RefuelDate|date("d.m.Y") }}</td>
+                <td>{{ refuel.refuelplace}}</td>
+                <td>{{ refuel.RefuelLiter }}</td>
+                <td>{{ refuel.RefuelCost }}</td>
+                <td class="text-right text-nowrap">
+                    {% if refuel.driver.id == app.user.id %}
+                    <a class="btn btn-default btn-sm" href="{{ path('refuel_edit', {'id': refuel.id }) }}"
+                       title="Edit">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="{{ path('refuel_delete', {'id': refuel.id }) }}"
+                       title="Delete">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
 
-{% block stylesheets %}
-    <style>
-
-    </style>
+{% block javascripts %}
+    <script type="text/javascript">
+        $("#refuel_table").DataTable({
+            "columnDefs": [
+                {"orderable": false, "targets": 6}
+            ]
+        });
+    </script>
 {% endblock %}

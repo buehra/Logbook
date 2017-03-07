@@ -21,19 +21,51 @@ class RefuelController extends Controller
      */
     public function refuelShow(Request $request)
     {
+        $repository = $this->getDoctrine()->getRepository('AppBundle:refuel');
+        $refuels = $repository->findAll();
         // replace this example code with whatever you need
-        return $this->render('refuel/refuelShow.html.twig');
+        return $this->render('refuel/refuelShow.html.twig', array(
+            'refuels' => $refuels
+        ));
     }
 
     /**
      * @Route("/refuel/create", name="refuel_create")
+     * @Route("/refuel/edit/{id}", name="refuel_edit")
+     * @param Request $request
      * @param refuel $refuel
      * @return \Symfony\Component\HttpFoundation\Response
+     * @internal param refuel $refuel
      */
-    public function refuelCreate(refuel $refuel)
+    public function refuelCreate(Request $request, refuel $refuel = null)
     {
-        // replace this example code with whatever you need
-        return $this->render('refuel/refuelCreate.html.twig');
+        if ($refuel == null){
+            $refuel = new refuel();
+        }
+
+        $form = $this->createForm('AppBundle\Form\RefuelType', $refuel);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            //EntityManager definieren
+            $em = $this->getDoctrine()->getManager();
+
+            // Logged User
+            $refuel->setDriver($this->getUser());
+
+            //Refuel speichern
+            $em->persist($refuel);
+            //Save
+            $em->flush();
+
+            return $this->redirectToRoute('refuel_show');
+        }
+
+        return $this->render('refuel/refuelCreate.html.twig', array(
+            'refuel' => $refuel,
+            'edit_form' => $form->createView()
+        ));
     }
 
     /**
@@ -43,29 +75,12 @@ class RefuelController extends Controller
      */
     public function refuelDelete(refuel $refuel)
     {
-        // replace this example code with whatever you need
-        return $this->render('refuel/refuelShow.html.twig');
+        //EntityManager definieren
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($refuel);
+        $em->flush();
+
+        return $this->redirectToRoute('refuel_show');
     }
 
-    /**
-     * @Route("/refuel/edit/{id}", name="refuel_edit")
-     * @param refuel $refuel
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function refuelEdit(refuel $refuel)
-    {
-        // replace this example code with whatever you need
-        return $this->render('refuel/refuelEdit.html.twig');
-    }
-
-    /**
-     * @Route("/refuel/detail/{id}", name="refuel_detail")
-     * @param refuel $refuel
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function refuelDetail(refuel $refuel)
-    {
-        // replace this example code with whatever you need
-        return $this->render('refuel/refuelDetail.html.twig');
-    }
 }
