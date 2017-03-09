@@ -28,20 +28,20 @@ class driving_effective
     /**
      * @ORM\Column(type="datetime")
      */
-    private $plane_date_from;
+    private $effective_date_from;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $plane_date_to;
+    private $effective_date_to;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="float", nullable=true)
      */
     private $driving_hour;
 
     /**
-     * @ORM\Column(type="string", length=1000)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     private $description;
 
@@ -57,6 +57,14 @@ class driving_effective
      */
     private $boat;
 
+    public function validEndDatetime(){
+        if ($this->effective_date_to == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 
     /**
      * Get id
@@ -71,13 +79,14 @@ class driving_effective
     /**
      * Set planeDateFrom
      *
-     * @param \DateTime $planeDateFrom
-     *
+     * @param $effectiveDateFrom
      * @return driving_effective
+     * @internal param \DateTime $planeDateFrom
+     *
      */
-    public function setPlaneDateFrom($planeDateFrom)
+    public function setEffectiveDateFrom($effectiveDateFrom)
     {
-        $this->plane_date_from = $planeDateFrom;
+        $this->effective_date_from = $effectiveDateFrom;
 
         return $this;
     }
@@ -87,21 +96,22 @@ class driving_effective
      *
      * @return \DateTime
      */
-    public function getPlaneDateFrom()
+    public function getEffectiveDateFrom()
     {
-        return $this->plane_date_from;
+        return $this->effective_date_from;
     }
 
     /**
      * Set planeDateTo
      *
-     * @param \DateTime $planeDateTo
-     *
+     * @param $effectiveDateTo
      * @return driving_effective
+     * @internal param \DateTime $planeDateTo
+     *
      */
-    public function setPlaneDateTo($planeDateTo)
+    public function setEffectiveDateTo($effectiveDateTo)
     {
-        $this->plane_date_to = $planeDateTo;
+        $this->effective_date_to = $effectiveDateTo;
 
         return $this;
     }
@@ -111,9 +121,9 @@ class driving_effective
      *
      * @return \DateTime
      */
-    public function getPlaneDateTo()
+    public function getEffectiveDateTo()
     {
-        return $this->plane_date_to;
+        return $this->effective_date_to;
     }
 
     /**

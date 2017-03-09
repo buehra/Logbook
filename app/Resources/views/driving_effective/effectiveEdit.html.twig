@@ -1,13 +1,46 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Dashboard</h1>
+    <h1>Auf See beenden</h1>
+    <table class="table">
+        <tbody>
+        <tr>
+            <th style="width:200px;">Fahrer:</th>
+            <td>{{ effective.driver.displayname }}
+            </td>
+        </tr>
+        <tr>
+            <th>Boat:</th>
+            <td>{{ effective.boat.fullname }}</td>
+        </tr>
+        <tr>
+            <th>Start:</th>
+            <td>{{ effective.EffectiveDateFrom|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        </tbody>
+    </table>
 
-
+    {{ form_start(edit_form) }}
+    <div class='col-sm-6'>
+        {{ form_widget(edit_form) }}
+        </br>
+        <input id="submitter" type="submit" class="btn btn-default" value="Speichern"/>
+        <a href="{{ path('effective_show') }}" class="btn btn-default">Zurück</a>
+    </div>
+    {{ form_end(edit_form) }}
 {% endblock %}
 
 {% block stylesheets %}
-    <style>
 
-    </style>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('Public/fullcalendar/de.js') }}"></script>
+    <script>
+        $(function () {
+            $('#effective_close_effective_date_to').datetimepicker({
+                locale: 'de',
+                defaultDate: $('#effective_close_effective_date_to').val()
+            });
+        });
+    </script>
 {% endblock %}

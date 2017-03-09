@@ -1,13 +1,71 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Dashboard</h1>
+    <h1>Auf See</h1>
 
+    <table id="effective_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+        <tr class="bg-info">
+            <th data-priority="1">Fahrer:</th>
+            <th>Boat:</th>
+            <th>Start:</th>
+            <th>Ende:</th>
+            <th>Fahrstunden:</th>
+            <th>Kommentar:</th>
+            <th class="text-right text-nowrap" data-priority="2">
+                <a class="btn btn-default btn-sm" href="{{ path('effective_create') }}" title="Create">
+                    <i class="fa fa-plus" aria-hidden="true"> Erstellen</i>
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for effective in effectives %}
+            <tr>
+                <td>{{ effective.driver.displayname }}</td>
+                <td>{{ effective.boat.fullname }}</td>
+                <td>{{ effective.EffectiveDateFrom|date("d.m.Y") }}</td>
+                <td>
+                    {% if effective.validEndDatetime %}
+                        {{ effective.EffectiveDateTo|date("d.m.Y") }}
+                    {% endif %}
+                </td>
+                <td>{{ effective.DrivingHour }}</td>
+                <td>{{ effective.description }}</td>
+                <td class="text-right text-nowrap">
+                    <a class="btn btn-default btn-sm" href="{{ path('effective_detail', {'id': effective.id }) }}"
+                       title="Detail">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                    {% if effective.driver.id == app.user.id %}
+                        {% if not effective.validEndDatetime %}
+                            <a class="btn btn-default btn-sm" href="{{ path('effective_edit', {'id': effective.id }) }}"
+                               title="Beenden">
+                                <i class="fa fa-check"></i>
+                            </a>
+                        {% endif %}
+                        <a class="btn btn-danger btn-sm" href="{{ path('effective_delete', {'id': effective.id }) }}"
+                           title="Delete">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
 
-{% block stylesheets %}
-    <style>
-
-    </style>
+{% block javascripts %}
+    <script type="text/javascript">
+        $("#effective_table").DataTable({
+            responsive: true,
+            columnDefs: [
+                {orderable: false, targets: 6},
+                {responsivePriority: 1, targets: 0},
+                {responsivePriority: 2, targets: -2}
+            ]
+        });
+    </script>
 {% endblock %}

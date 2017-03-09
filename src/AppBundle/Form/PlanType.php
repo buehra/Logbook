@@ -28,13 +28,11 @@ class PlanType extends AbstractType
                 'choice_label' => 'fullname',
                 'attr'=> array('class'=>'form-control')))
             ->add('plane_date_from', DateTimeType::class, array(
-                'required' => false,
                 'label' => 'Von:',
                 'widget' => 'single_text',
                 'html5' => false,
                 'attr'=> array('class'=>'form-control')))
             ->add('plane_date_to', DateTimeType::class, array(
-                'required' => false,
                 'label' => 'Bis:',
                 'widget' => 'single_text',
                 'html5' => false,

@@ -21,19 +21,47 @@ class EffectiveController extends Controller
      */
     public function effectiveShow(Request $request)
     {
-        // replace this example code with whatever you need
-        return $this->render('driving_effective/effectiveShow.html.twig');
+        $repository = $this->getDoctrine()->getRepository('AppBundle:driving_effective');
+        $effectives = $repository->findAll();
+
+        return $this->render('driving_effective/effectiveShow.html.twig', array(
+            'effectives' => $effectives
+        ));
     }
 
     /**
      * @Route("/effective/create", name="effective_create")
-     * @param driving_effective $effective
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @internal param driving_effective $effective
      */
-    public function effectiveCreate(driving_effective $effective)
+    public function effectiveCreate(Request $request)
     {
+        $effective = new driving_effective();
+
+        $form = $this->createForm('AppBundle\Form\EffectiveType', $effective);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            //EntityManager definieren
+            $em = $this->getDoctrine()->getManager();
+
+            // Logged User
+            $effective->setDriver($this->getUser());
+
+            //Refuel speichern
+            $em->persist($effective);
+            //Save
+            $em->flush();
+
+            return $this->redirectToRoute('effective_show');
+        }
         // replace this example code with whatever you need
-        return $this->render('driving_effective/effectiveCreate.html.twig');
+        return $this->render('driving_effective/effectiveCreate.html.twig', array(
+            'effective' => $effective,
+            'edit_form' => $form->createView()
+        ));
     }
 
     /**
@@ -43,19 +71,51 @@ class EffectiveController extends Controller
      */
     public function effectiveDelete(driving_effective $effective)
     {
-        // replace this example code with whatever you need
+        //EntityManager definieren
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($effective);
+        $em->flush();
+
         return $this->render('driving_effective/effectiveShow.html.twig');
     }
 
     /**
      * @Route("/effective/edit/{id}", name="effective_edit")
+     * @param Request $request
      * @param driving_effective $effective
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function effectiveEdit(driving_effective $effective)
+    public function effectiveEdit(Request $request, driving_effective $effective)
     {
+        $form = $this->createForm('AppBundle\Form\EffectiveCloseType', $effective);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            //EntityManager definieren
+            $em = $this->getDoctrine()->getManager();
+
+            // Logged User
+            $effective->setDriver($this->getUser());
+
+            $boat = $effective->getBoat();
+            $hour = floatval($boat->getDrivehour()) + floatval($effective->getDrivingHour());
+            $boat->setDrivehour($hour);
+
+            $em->persist($effective);
+            $em->persist($boat);
+
+            //Save
+            $em->flush();
+
+            return $this->redirectToRoute('effective_show');
+        }
         // replace this example code with whatever you need
-        return $this->render('driving_effective/effectiveEdit.html.twig');
+        return $this->render('driving_effective/effectiveEdit.html.twig', array(
+            'effective' => $effective,
+            'edit_form' => $form->createView()
+        ));
+
     }
 
     /**
@@ -65,7 +125,9 @@ class EffectiveController extends Controller
      */
     public function effectiveDetail(driving_effective $effective)
     {
-        // replace this example code with whatever you need
-        return $this->render('driving_effective/effectiveDetail.html.twig');
+
+        return $this->render('driving_effective/effectiveDetail.html.twig',array(
+            'effective' => $effective
+        ));
     }
 }
