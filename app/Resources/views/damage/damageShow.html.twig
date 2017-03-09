@@ -1,13 +1,63 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Dashboard</h1>
+    <h1>Unfall</h1>
 
+    <table id="damage_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+        <tr class="bg-info">
+            <th data-priority="1">Fahrer:</th>
+            <th>Boat:</th>
+            <th>Datum:</th>
+            <th>Unfallort:</th>
+            <th>Beschreibung:</th>
+            <th class="text-right text-nowrap" data-priority="2">
+                <a class="btn btn-default btn-sm" href="{{ path('damage_create') }}" title="Create">
+                    <i class="fa fa-plus" aria-hidden="true"> Erstellen</i>
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for damage in damages %}
+            <tr>
+                <td>{{ damage.driver.displayname }}</td>
+                <td>{{ damage.boat.fullname }}</td>
+                <td>{{ damage.DamageDate|date("d.m.Y") }}</td>
+                <td>{{ damage.place}}</td>
+                <td>{{ damage.description }}</td>
+                <td class="text-right text-nowrap">
+                    <a class="btn btn-default btn-sm" href="{{ path('damage_detail', {'id': damage.id }) }}"
+                       title="Detail">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                    {% if damage.driver.id == app.user.id %}
+                        <a class="btn btn-default btn-sm" href="{{ path('damage_edit', {'id': damage.id }) }}"
+                           title="Edit">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-danger btn-sm" href="{{ path('damage_delete', {'id': damage.id }) }}"
+                           title="Delete">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
 
-{% block stylesheets %}
-    <style>
-
-    </style>
+{% block javascripts %}
+    <script type="text/javascript">
+        $("#damage_table").DataTable({
+            responsive: true,
+            columnDefs: [
+                { orderable: false, targets: 5 },
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -2 }
+            ]
+        });
+    </script>
 {% endblock %}

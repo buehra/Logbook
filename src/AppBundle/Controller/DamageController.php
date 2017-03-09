@@ -21,19 +21,50 @@ class DamageController extends Controller
      */
     public function damageShow(Request $request)
     {
+        $repository = $this->getDoctrine()->getRepository('AppBundle:damage');
+        $damage = $repository->findAll();
         // replace this example code with whatever you need
-        return $this->render('damage/damageShow.html.twig');
+        return $this->render('damage/damageShow.html.twig', array(
+            'damages' => $damage
+        ));
     }
 
     /**
      * @Route("/damage/create", name="damage_create")
+     * @Route("/damage/edit/{id}", name="damage_edit")
+     * @param Request $request
      * @param damage $damage
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function damageCreate(damage $damage)
+    public function damageCreate(Request $request, damage $damage = null)
     {
+        if ($damage == null){
+            $damage = new damage();
+        }
+
+        $form = $this->createForm('AppBundle\Form\DamageType', $damage);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            //EntityManager definieren
+            $em = $this->getDoctrine()->getManager();
+
+            // Logged User
+            $damage->setDriver($this->getUser());
+
+            //Refuel speichern
+            $em->persist($damage);
+            //Save
+            $em->flush();
+
+            return $this->redirectToRoute('damage_show');
+        }
         // replace this example code with whatever you need
-        return $this->render('damage/damageCreate.html.twig');
+        return $this->render('damage/damageCreate.html.twig', array(
+            'damage' => $damage,
+            'edit_form' => $form->createView()
+        ));
     }
 
     /**
@@ -43,19 +74,12 @@ class DamageController extends Controller
      */
     public function damageDelete(damage $damage)
     {
+        //EntityManager definieren
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($damage);
+        $em->flush();
         // replace this example code with whatever you need
         return $this->render('damage/damageShow.html.twig');
-    }
-
-    /**
-     * @Route("/damage/edit/{id}", name="damage_edit")
-     * @param damage $damage
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function damageEdit(damage $damage)
-    {
-        // replace this example code with whatever you need
-        return $this->render('damage/damageEdit.html.twig');
     }
 
     /**
@@ -66,6 +90,8 @@ class DamageController extends Controller
     public function damageDetail(damage $damage)
     {
         // replace this example code with whatever you need
-        return $this->render('damage/damageDetail.html.twig');
+        return $this->render('damage/damageDetail.html.twig', array(
+            'damage' => $damage
+        ));
     }
 }

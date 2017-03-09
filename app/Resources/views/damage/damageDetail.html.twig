@@ -1,13 +1,41 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Dashboard</h1>
+    <h1>Unfall</h1>
+    <table class="table">
+        <tbody>
+        <tr>
+            <th style="width:100px;">Fahrer:</th>
+            <td>{{ damage.driver.displayname }}
+            </td>
+        </tr>
+        <tr>
+            <th>Boot:</th>
+            <td>{{ damage.boat.fullname }}
+            </td>
+        </tr>
+        <tr>
+            <th>Datum:</th>
+            <td>{{ damage.DamageDate|date('Y-m-d') }}
+            </td>
+        </tr>
+        <tr>
+            <th>Ort:</th>
+            <td>{{ damage.place }}</td>
+        </tr>
+        <tr>
+            <th>Beschreibung:</th>
+            <td>{{ damage.place }}</td>
+        </tr>
+        <tr>
+            <th>Bild:</th>
+            <td><a href="{{ vich_uploader_asset(damage, 'imageFile', 'AppBundle\\Entity\\damage') }}">
+                    <img style="max-width: 400px; width: 100%;" src="{{ vich_uploader_asset(damage, 'imageFile', 'AppBundle\\Entity\\damage') }}" alt="{{ damage.place }}" />
+                </a></td>
+        </tr>
+        </tbody>
+    </table>
 
+    <a href="{{ path('damage_show') }}" class="btn btn-default">Zurück</a>
 
-{% endblock %}
-
-{% block stylesheets %}
-    <style>
-
-    </style>
 {% endblock %}
