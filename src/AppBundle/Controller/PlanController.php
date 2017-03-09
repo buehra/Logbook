@@ -21,19 +21,50 @@ class PlanController extends Controller
      */
     public function planShow(Request $request)
     {
+        $repository = $this->getDoctrine()->getRepository('AppBundle:driving_plan');
+        $plan = $repository->findAll();
         // replace this example code with whatever you need
-        return $this->render('driving_plan/planShow.html.twig');
+        return $this->render('driving_plan/planShow.html.twig', array(
+            'plans' => $plan
+        ));
     }
 
     /**
      * @Route("/plan/create", name="plan_create")
+     * @Route("/plan/edit/{id}", name="plan_edit")
+     * @param Request $request
      * @param driving_plan $plan
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function planCreate(driving_plan $plan)
+    public function planCreate(Request $request, driving_plan $plan = null)
     {
+        if ($plan == null){
+            $plan = new driving_plan();
+        }
+
+        $form = $this->createForm('AppBundle\Form\PlanType', $plan);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            //EntityManager definieren
+            $em = $this->getDoctrine()->getManager();
+
+            // Logged User
+            $plan->setDriver($this->getUser());
+
+            //Refuel speichern
+            $em->persist($plan);
+            //Save
+            $em->flush();
+
+            return $this->redirectToRoute('plan_show');
+        }
         // replace this example code with whatever you need
-        return $this->render('driving_plan/planCreate.html.twig');
+        return $this->render('driving_plan/planCreate.html.twig', array(
+            'plan' => $plan,
+            'edit_form' => $form->createView()
+        ));
     }
 
     /**
@@ -43,19 +74,12 @@ class PlanController extends Controller
      */
     public function planDelete(driving_plan $plan)
     {
-        // replace this example code with whatever you need
-        return $this->render('driving_plan/planShow.html.twig');
-    }
+        //EntityManager definieren
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($plan);
+        $em->flush();
 
-    /**
-     * @Route("/plan/edit/{id}", name="plan_edit")
-     * @param driving_plan $plan
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function planEdit(driving_plan $plan)
-    {
-        // replace this example code with whatever you need
-        return $this->render('driving_plan/planEdit.html.twig');
+        return $this->redirectToRoute('plan_show');
     }
 
     /**
@@ -66,6 +90,8 @@ class PlanController extends Controller
     public function planDetail(driving_plan $plan)
     {
         // replace this example code with whatever you need
-        return $this->render('driving_plan/planDetail.html.twig');
+        return $this->render('driving_plan/planDetail.html.twig', array(
+            'plan' => $plan
+        ));
     }
 }

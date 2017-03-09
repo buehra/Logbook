@@ -1,8 +1,23 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Dashboard</h1>
+    <h1>{{ plan.driver.displayname ~ ' - ' ~ plan.boat.fullname }}</h1>
+    <table class="table">
+        <tbody>
+        <tr>
+            <th style="width:200px;">Plan von:</th>
+            <td>{{ plan.PlaneDateFrom|date('Y-m-d H:i:s') }}
+            </td>
+        </tr>
+        <tr>
+            <th>Plan bis:</th>
+            <td>{{ plan.PlaneDateTo|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        </tbody>
+    </table>
 
+    <a href="{{ path('plan_show') }}" class="btn btn-default">Zurück</a>
+    <a href="{{ path('plan_delete', {'id': plan.id }) }}" class="btn btn-danger"><i class="fa fa-trash"></i>Löschen</a>
 
 {% endblock %}
 
