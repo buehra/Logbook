@@ -15,3 +15,4 @@
 /vendor/
 /web/bundles/
 /web/images/damages/*
+!/web/images/damages

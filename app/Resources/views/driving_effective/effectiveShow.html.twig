@@ -61,10 +61,11 @@
     <script type="text/javascript">
         $("#effective_table").DataTable({
             responsive: true,
+            order: [[ 3, "asc" ]],
             columnDefs: [
                 {orderable: false, targets: 6},
                 {responsivePriority: 1, targets: 0},
-                {responsivePriority: 2, targets: -2}
+                {responsivePriority: 2, targets: -1}
             ]
         });
     </script>

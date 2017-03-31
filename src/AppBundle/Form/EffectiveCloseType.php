@@ -29,7 +29,7 @@ class EffectiveCloseType extends AbstractType
                 'html5' => false,
                 'attr'=> array('class'=>'form-control')))
             ->add('driving_hour', NumberType::class, array(
-                'label' => 'Fahrstunden:',
+                'label' => 'Motorstunden:',
                 'attr'=> array('class'=>'form-control')))
             ->add('description', TextType::class, array(
                 'required' => false,

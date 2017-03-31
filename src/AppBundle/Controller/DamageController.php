@@ -79,7 +79,7 @@ class DamageController extends Controller
         $em->remove($damage);
         $em->flush();
         // replace this example code with whatever you need
-        return $this->render('damage/damageShow.html.twig');
+        return $this->redirectToRoute('damage_show');
     }
 
     /**

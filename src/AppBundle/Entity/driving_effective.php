@@ -13,8 +13,10 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 
 /**
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\EffectiveRepository")
  * @ORM\Entity
  * @ORM\Table(name="driving_effective")
+ *
  */
 class driving_effective
 {

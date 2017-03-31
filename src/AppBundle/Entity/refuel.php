@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RefuelRepository")
  * @ORM\Entity
  * @ORM\Table(name="refuel")
  */

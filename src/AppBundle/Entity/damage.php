@@ -15,6 +15,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
 /**
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\DamageRepository")
  * @Vich\Uploadable
  * @ORM\Entity
  * @ORM\Table(name="damage")

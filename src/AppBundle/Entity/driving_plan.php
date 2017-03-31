@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 
 /**
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PlanRepository")
  * @ORM\Entity
  * @ORM\Table(name="driving_plan")
  */

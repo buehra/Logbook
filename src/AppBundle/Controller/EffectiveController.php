@@ -76,7 +76,7 @@ class EffectiveController extends Controller
         $em->remove($effective);
         $em->flush();
 
-        return $this->render('driving_effective/effectiveShow.html.twig');
+        return $this->redirectToRoute('effective_show');
     }
 
     /**
@@ -99,8 +99,10 @@ class EffectiveController extends Controller
             $effective->setDriver($this->getUser());
 
             $boat = $effective->getBoat();
-            $hour = floatval($boat->getDrivehour()) + floatval($effective->getDrivingHour());
-            $boat->setDrivehour($hour);
+
+            $hour = floatval($effective->getDrivingHour()) - floatval($boat->getDrivehour());
+            $boat->setDrivehour($effective->getDrivingHour());
+            $effective->setDrivingHour(round($hour, 2));
 
             $em->persist($effective);
             $em->persist($boat);
