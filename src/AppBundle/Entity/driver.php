@@ -10,6 +10,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -55,6 +56,11 @@ class driver implements UserInterface, \Serializable
      * @ORM\Column(type="string", length=100)
      */
     private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity="costs", mappedBy="driver")
+     */
+    private $costs;
 
     /**
      * Get id
@@ -285,5 +291,59 @@ class driver implements UserInterface, \Serializable
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * Set costs
+     *
+     * @param \AppBundle\Entity\costs $costs
+     *
+     * @return driver
+     */
+    public function setCosts(\AppBundle\Entity\costs $costs = null)
+    {
+        $this->costs[] = $costs;
+
+        return $this;
+    }
+
+    /**
+     * Get costs
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getCosts()
+    {
+        return $this->costs->toArray();
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->costs = new ArrayCollection();
+    }
+    /**
+     * Add cost
+     *
+     * @param \AppBundle\Entity\costs $cost
+     *
+     * @return driver
+     */
+    public function addCost(\AppBundle\Entity\costs $cost)
+    {
+        $this->costs[] = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Remove cost
+     *
+     * @param \AppBundle\Entity\costs $cost
+     */
+    public function removeCost(\AppBundle\Entity\costs $cost)
+    {
+        $this->costs->removeElement($cost);
     }
 }

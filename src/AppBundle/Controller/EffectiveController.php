@@ -7,6 +7,8 @@
  */
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\costs;
+use AppBundle\Entity\driver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,6 +106,38 @@ class EffectiveController extends Controller
             $boat->setDrivehour($effective->getDrivingHour());
             $effective->setDrivingHour(round($hour, 2));
 
+            $driver = $effective->getDriver();
+            $costs = $driver->getCosts();
+
+            //Hat noch keine Kosten
+            if (empty($costs)){
+                $costs = new costs();
+                $costs->setDriver($driver);
+                $costs->setYear(date("Y"));
+                $hours = (float)$costs->getHours() + (float)$effective->getDrivingHour();
+                $costs->setHours($hours);
+                $em->persist($costs);
+            }else{
+                //Hat Kosten
+                foreach ($costs as $cost){
+
+                if ($cost->getYear() != (int)date("Y")){
+                    $newcost = new costs();
+                    $newcost->setDriver($driver);
+                    $newcost->setYear(date("Y"));
+                    $hours = (float)$newcost->getHours() + (float)$effective->getDrivingHour();
+                    $newcost->setHours($hours);
+                    $em->persist($newcost);
+                }else{
+                    $hours = (float)$cost->getHours() + (float)$effective->getDrivingHour();
+                    $cost->setHours($hours);
+                    $em->persist($cost);
+                }
+                }
+            }
+
+            var_dump($costs);
+
             $em->persist($effective);
             $em->persist($boat);
 
@@ -127,7 +161,7 @@ class EffectiveController extends Controller
      */
     public function effectiveDetail(driving_effective $effective)
     {
-
+        dump($effective->getDriver()->getCosts());
         return $this->render('driving_effective/effectiveDetail.html.twig',array(
             'effective' => $effective
         ));
