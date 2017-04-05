@@ -54,13 +54,17 @@ class DefaultController extends Controller
 
         $plansCount = Count($todayPlans);
 
-        $driving = $em->getRepository('AppBundle:driving_effective')->findall();
+        $drivers = $em->getRepository('AppBundle:driver')->findall();
         $statHour = Array();
-        foreach ($driving as $drive) {
-            if (empty($statHour[$drive->getDriver()->getId()])){
-                $statHour[$drive->getDriver()->getId()] = ['name' => $drive->getDriver()->getDisplayName(), 'hours' => $drive->getDrivingHour()];
-            }else{
-                $statHour[$drive->getDriver()->getId()]['hours'] += $drive->getDrivingHour();
+
+        foreach ($drivers as $driver){
+            if (!empty($driver->getCosts())){
+                $costs = $driver->getCosts();
+                foreach ($costs as $cost){
+                    if ($cost->getYear() == date('Y')){
+                        $statHour[$driver->getId()] = ['name' => $driver->getDisplayName(), 'hours' => $cost->getHours()];
+                    }
+                }
             }
         }
 

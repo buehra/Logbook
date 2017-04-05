@@ -8,7 +8,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\costs;
-use AppBundle\Entity\driver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,6 +74,22 @@ class EffectiveController extends Controller
     {
         //EntityManager definieren
         $em = $this->getDoctrine()->getManager();
+
+        //Boot Motorstunden löschen
+        $boat = $effective->getBoat();
+        $boat->setDrivehour((float)$boat->getDrivehour() - (float)$effective->getDrivingHour());
+
+        //Fahrstunden vom Fahrer löschen
+        $costs = $effective->getDriver()->getCosts();
+        foreach ($costs as $cost) {
+            if ($cost->getYear() == (int)$effective->getEffectiveDateFrom()->format('Y')) {
+                $hours = (float)$cost->getHours() - (float)$effective->getDrivingHour();
+                $cost->setHours($hours);
+                $em->persist($cost);
+            }
+        }
+
+        $em->persist($boat);
         $em->remove($effective);
         $em->flush();
 
@@ -108,35 +123,36 @@ class EffectiveController extends Controller
 
             $driver = $effective->getDriver();
             $costs = $driver->getCosts();
+            $year = $effective->getEffectiveDateFrom()->format('Y');
+            $isSet = false;
 
             //Hat noch keine Kosten
-            if (empty($costs)){
+            if (empty($costs)) {
                 $costs = new costs();
                 $costs->setDriver($driver);
-                $costs->setYear(date("Y"));
+                $costs->setYear($year);
                 $hours = (float)$costs->getHours() + (float)$effective->getDrivingHour();
                 $costs->setHours($hours);
                 $em->persist($costs);
-            }else{
+            } else {
                 //Hat Kosten
-                foreach ($costs as $cost){
-
-                if ($cost->getYear() != (int)date("Y")){
-                    $newcost = new costs();
-                    $newcost->setDriver($driver);
-                    $newcost->setYear(date("Y"));
-                    $hours = (float)$newcost->getHours() + (float)$effective->getDrivingHour();
-                    $newcost->setHours($hours);
-                    $em->persist($newcost);
-                }else{
-                    $hours = (float)$cost->getHours() + (float)$effective->getDrivingHour();
-                    $cost->setHours($hours);
-                    $em->persist($cost);
-                }
+                foreach ($costs as $cost) {
+                    if ($cost->getYear() == (int)$year) {
+                        $hours = (float)$cost->getHours() + (float)$effective->getDrivingHour();
+                        $cost->setHours($hours);
+                        $em->persist($cost);
+                        $isSet = true;
+                    }
                 }
             }
-
-            var_dump($costs);
+            if (!$isSet){
+                $newcost = new costs();
+                $newcost->setDriver($driver);
+                $newcost->setYear($year);
+                $hours = (float)$newcost->getHours() + (float)$effective->getDrivingHour();
+                $newcost->setHours($hours);
+                $em->persist($newcost);
+            }
 
             $em->persist($effective);
             $em->persist($boat);
@@ -162,7 +178,7 @@ class EffectiveController extends Controller
     public function effectiveDetail(driving_effective $effective)
     {
         dump($effective->getDriver()->getCosts());
-        return $this->render('driving_effective/effectiveDetail.html.twig',array(
+        return $this->render('driving_effective/effectiveDetail.html.twig', array(
             'effective' => $effective
         ));
     }

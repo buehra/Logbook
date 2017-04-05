@@ -7,6 +7,7 @@
  */
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\costs;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,7 @@ class RefuelController extends Controller
     {
         $repository = $this->getDoctrine()->getRepository('AppBundle:refuel');
         $refuels = $repository->findAll();
+
         // replace this example code with whatever you need
         return $this->render('refuel/refuelShow.html.twig', array(
             'refuels' => $refuels
@@ -39,7 +41,7 @@ class RefuelController extends Controller
      */
     public function refuelCreate(Request $request, refuel $refuel = null)
     {
-        if ($refuel == null){
+        if ($refuel == null) {
             $refuel = new refuel();
         }
 
@@ -54,12 +56,43 @@ class RefuelController extends Controller
             // Logged User
             $refuel->setDriver($this->getUser());
 
+            $driver = $refuel->getDriver();
+            $costs = $driver->getCosts();
+            $year = (int)$refuel->getRefuelDate()->format('Y');
+            $isSet = false;
+
+            //Hat noch keine Kosten
+            if (empty($costs)) {
+                $costs = new costs();
+                $costs->setDriver($driver);
+                $costs->setYear($year);
+                $costs->setCredit($refuel->getRefuelCost());
+                $em->persist($costs);
+            } else {
+                //Hat Kosten
+                foreach ($costs as $cost) {
+                    if ($cost->getYear() == (int)$year) {
+                        $cost->setCredit($cost->getCredit() + $refuel->getRefuelCost());
+                        $em->persist($cost);
+                        $isSet = true;
+                    }
+                }
+            }
+            if (!$isSet){
+                $newcost = new costs();
+                $newcost->setDriver($driver);
+                $newcost->setYear($year);
+                $newcost->setCredit($refuel->getRefuelCost());
+                $em->persist($newcost);
+            }
+
             //Refuel speichern
             $em->persist($refuel);
             //Save
             $em->flush();
 
-            return $this->redirectToRoute('refuel_show');
+            dump($request);
+            //return $this->redirectToRoute('refuel_show');
         }
 
         return $this->render('refuel/refuelCreate.html.twig', array(
@@ -77,6 +110,17 @@ class RefuelController extends Controller
     {
         //EntityManager definieren
         $em = $this->getDoctrine()->getManager();
+
+        //Kredit vom Fahrer löschen
+        $costs = $refuel->getDriver()->getCosts();
+        foreach ($costs as $cost) {
+            if ($cost->getYear() == (int)$refuel->getRefuelDate()->format('Y')) {
+                $credit = (float)$cost->getCredit() - (float)$refuel->getRefuelCost();
+                $cost->setCredit($credit);
+                $em->persist($cost);
+            }
+        }
+
         $em->remove($refuel);
         $em->flush();
 
