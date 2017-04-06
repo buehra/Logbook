@@ -4,8 +4,14 @@
     <h1>Unfall</h1>
     {{ form_start(edit_form) }}
     {{ form_widget(edit_form) }}
-    </br>
+    <br />
     <input id="submitter" type="submit" class="btn btn-default" value="Speichern"/>
     <a href="{{ path('damage_show') }}" class="btn btn-default">Zurück</a>
     {{ form_end(edit_form) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $("label[for=damage_imageFile_delete]").text('Bild aktualisieren');
+    </script>
 {% endblock %}

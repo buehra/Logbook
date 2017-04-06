@@ -17,10 +17,9 @@ class RefuelController extends Controller
 {
     /**
      * @Route("/refuel", name="refuel_show")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function refuelShow(Request $request)
+    public function refuelShow()
     {
         $repository = $this->getDoctrine()->getRepository('AppBundle:refuel');
         $refuels = $repository->findAll();
@@ -60,6 +59,7 @@ class RefuelController extends Controller
             $costs = $driver->getCosts();
             $year = (int)$refuel->getRefuelDate()->format('Y');
             $isSet = false;
+            $refuelCost = (float)$refuel->getRefuelCost() - (float)$refuel->getRefuelCostOld();
 
             //Hat noch keine Kosten
             if (empty($costs)) {
@@ -72,7 +72,7 @@ class RefuelController extends Controller
                 //Hat Kosten
                 foreach ($costs as $cost) {
                     if ($cost->getYear() == (int)$year) {
-                        $cost->setCredit($cost->getCredit() + $refuel->getRefuelCost());
+                        $cost->setCredit($cost->getCredit() + $refuelCost);
                         $em->persist($cost);
                         $isSet = true;
                     }
@@ -86,13 +86,14 @@ class RefuelController extends Controller
                 $em->persist($newcost);
             }
 
+            $refuel->setRefuelCostOld($refuel->getRefuelCost());
+
             //Refuel speichern
             $em->persist($refuel);
             //Save
             $em->flush();
 
-            dump($request);
-            //return $this->redirectToRoute('refuel_show');
+            return $this->redirectToRoute('refuel_show');
         }
 
         return $this->render('refuel/refuelCreate.html.twig', array(

@@ -12,15 +12,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use \AppBundle\Entity\driving_effective;
+use Symfony\Component\HttpFoundation\Response;
 
 class EffectiveController extends Controller
 {
     /**
      * @Route("/effective", name="effective_show")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function effectiveShow(Request $request)
+    public function effectiveShow()
     {
         $repository = $this->getDoctrine()->getRepository('AppBundle:driving_effective');
         $effectives = $repository->findAll();
@@ -45,14 +45,23 @@ class EffectiveController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $boat = $effective->getBoat();
+
+            if ($boat->getIsAvailable()){
+                return new Response('Fehler');
+            }
+
             //EntityManager definieren
             $em = $this->getDoctrine()->getManager();
 
             // Logged User
             $effective->setDriver($this->getUser());
 
+            $boat->setIsAvailable(true);
+
             //Refuel speichern
             $em->persist($effective);
+            $em->persist($boat);
             //Save
             $em->flush();
 
@@ -119,6 +128,7 @@ class EffectiveController extends Controller
 
             $hour = floatval($effective->getDrivingHour()) - floatval($boat->getDrivehour());
             $boat->setDrivehour($effective->getDrivingHour());
+            $boat->setIsAvailable(false);
             $effective->setDrivingHour(round($hour, 2));
 
             $driver = $effective->getDriver();
@@ -177,7 +187,6 @@ class EffectiveController extends Controller
      */
     public function effectiveDetail(driving_effective $effective)
     {
-        dump($effective->getDriver()->getCosts());
         return $this->render('driving_effective/effectiveDetail.html.twig', array(
             'effective' => $effective
         ));

@@ -30,7 +30,9 @@ class DamageType extends AbstractType
                 'choice_label' => 'fullname',
                 'attr'=> array('class'=>'form-control')))
             ->add('damage_date', DateType::class, array(
-                'label' => 'Datum:'))
+                'label' => 'Datum:',
+                'widget' => 'single_text',
+                'attr'=> array('class'=>'form-control')))
             ->add('place', TextType::class, array(
                 'required' => false,
                 'label' => 'Ort:',

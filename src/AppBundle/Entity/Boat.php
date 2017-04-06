@@ -48,6 +48,11 @@ class Boat
      */
     private $drivehour;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isAvailable;
+
 
     /**
      * Get id
@@ -170,5 +175,29 @@ class Boat
     public function getDrivehour()
     {
         return $this->drivehour;
+    }
+
+    /**
+     * Set isAvailable
+     *
+     * @param boolean $isAvailable
+     *
+     * @return Boat
+     */
+    public function setIsAvailable($isAvailable)
+    {
+        $this->isAvailable = $isAvailable;
+
+        return $this;
+    }
+
+    /**
+     * Get isAvailable
+     *
+     * @return boolean
+     */
+    public function getIsAvailable()
+    {
+        return $this->isAvailable;
     }
 }

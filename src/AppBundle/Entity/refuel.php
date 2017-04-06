@@ -46,6 +46,11 @@ class refuel
     private $refuel_cost;
 
     /**
+     * @ORM\Column(type="float")
+     */
+    private $refuel_cost_old;
+
+    /**
      * One Damage has One driver.
      * @ManyToOne(targetEntity="driver")
      */
@@ -215,5 +220,29 @@ class refuel
     public function getBoat()
     {
         return $this->boat;
+    }
+
+    /**
+     * Set refuelCostOld
+     *
+     * @param float $refuelCostOld
+     *
+     * @return refuel
+     */
+    public function setRefuelCostOld($refuelCostOld)
+    {
+        $this->refuel_cost_old = $refuelCostOld;
+
+        return $this;
+    }
+
+    /**
+     * Get refuelCostOld
+     *
+     * @return float
+     */
+    public function getRefuelCostOld()
+    {
+        return $this->refuel_cost_old;
     }
 }

@@ -23,7 +23,7 @@
                             <div class="huge">
                                 {% if not lastRefuel == null %}
                                     {{ lastRefuel|date("d.m.Y") }}
-                                {% else  %}
+                                {% else %}
                                     Keine
                                 {% endif %}
                             </div>
@@ -58,7 +58,7 @@
                             <div class="huge">
                                 {% if not lastDamage == null %}
                                     {{ lastDamage|date("d.m.Y") }}
-                                {% else  %}
+                                {% else %}
                                     Keiner
                                 {% endif %}
                             </div>
@@ -147,11 +147,19 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Fahrstunden ({{ "now"|date("Y") }})</h3>
+                    <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Fahrstunden ({{ "now"|date("Y") }})
+                    </h3>
                 </div>
                 <div class="panel-body">
                     <div id="driving_hour"></div>
                 </div>
+                <a href="{{ path('auswertung_show', {'year': "now"|date("Y") }) }}">
+                    <div class="panel-footer">
+                        <span class="pull-left">Auswertung</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
@@ -162,14 +170,19 @@
 {% endblock %}
 
 {% block javascripts %}
-<script>
-    Morris.Donut({
-    element: 'driving_hour',
-    data: [
-        {% for value in chartValue %}
-        {label: "{{ value['name'] }}", value: {{ value['hours'] }}},
-        {%  endfor %}
-    ]
-    });
-</script>
+    <!-- Charts -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="http://cdn.oesmith.co.uk/morris-0.4.1.min.js"></script>
+
+    <script>
+        Morris.Donut({
+            element: 'driving_hour',
+            data: [
+                {% for value in chartValue %}
+                {label: "{{ value['name'] }}", value: {{ value['hours'] }}},
+                {% endfor %}
+            ]
+        });
+    </script>
 {% endblock %}

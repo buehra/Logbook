@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="invoice-title">
+                    <h2>Kostenverteilung {{ year }}</h2>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Stand von {{ "now"|date("d.m.y") }}</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <thead>
+                                <tr>
+                                    <td><strong>Fahrer</strong></td>
+                                    <td class="text-center"><strong>Tankkosten</strong></td>
+                                    <td class="text-center"><strong>Fahrstunden</strong></td>
+                                    <td class="text-center"><strong>Offener Betrag</strong></td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for value in list %}
+                                    <tr>
+                                        <td class="text-left">{{ value['name'] }}</td>
+                                        <td class="text-center">{{ value['refuelcost'] }} CHF</td>
+                                        <td class="text-center">{{ value['hours'] }}</td>
+                                        <td class="text-center"
+                                            style="background-color: {{ value['color'] }}">{{ value['depit'] }} CHF
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-4">
+                    <h3 class="text-center">Zusammenfassung</h3>
+                    <hr>
+                    <div class="pull-left">Totale Tankkosten</div>
+                    <div class="pull-right"><p class="text-right">{{ totalRefuel }}</p></div>
+                    <div class="clearfix"></div>
+                    <div class="pull-left">Totale Fahrstunden</div>
+                    <div class="pull-right"><p class="text-right">{{ totalHours }}</p></div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-md-4 offset-md-1">
+                    <h3 class="text-center">Rechnung</h3>
+                    <hr>
+                    <div class="text-center">
+                        <strong>Durchschnitt * Fahrstunden - Tankkosten</strong><br>
+                    </div>
+                </div>
+                <div class="col-md-4 offset-md-2">
+                    <h3 class="text-center">&empty; Durchschnitt</h3>
+                    <hr>
+                    <address>
+                        &empty; CHF pro Fahrstunde <strong>{{ durchschnitt }}</strong><br>
+                    </address>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

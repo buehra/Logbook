@@ -30,7 +30,9 @@ class RefuelType extends AbstractType
                 'attr'=> array('class'=>'form-control')))
             ->add('refuel_date', DateType::class, array(
                 'required' => false,
-                'label' => 'Datum:'))
+                'label' => 'Datum:',
+                'widget' => 'single_text',
+                'attr'=> array('class'=>'form-control')))
             ->add('refuel_place', TextType::class, array(
                 'label' => 'Tankstelle:',
                 'attr'=> array('class'=>'form-control')))

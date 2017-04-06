@@ -3,9 +3,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\driver;
-use AppBundle\Entity\driving_effective;
-use DateTime;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,10 +11,9 @@ class DefaultController extends Controller
 {
     /**
      * @Route("/", name="homepage")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -49,7 +45,7 @@ class DefaultController extends Controller
         //Geplant für heute
         $todayPlans = $this->getDoctrine()
             ->getManager()
-            ->createQuery('SELECT e FROM AppBundle:driving_plan e WHERE e.plane_date_from > CURRENT_DATE()')
+            ->createQuery('SELECT e FROM AppBundle:driving_plan e WHERE e.plane_date_from > CURRENT_DATE() OR e.plane_date_to > CURRENT_DATE()')
             ->getResult();
 
         $plansCount = Count($todayPlans);
@@ -84,6 +80,58 @@ class DefaultController extends Controller
     public function logoutAction()
     {
         throw new \Exception('this should not be reached!');
+    }
+
+    /**
+     * @Route("/auswertung/{year}", name="auswertung_show")
+     */
+    public function auswertungShow($year)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $drivers = $em->getRepository('AppBundle:driver')->findall();
+        $currentYear = Array();
+        $totalRefuel = 0;
+        $totalHours = 0;
+        $durchschnitt = 0;
+        $hexRed = '#FF0000';
+        $hexGreen = '#55AA55';
+
+        foreach ($drivers as $driver){
+            if (!empty($driver->getCosts())){
+                $costs = $driver->getCosts();
+                foreach ($costs as $cost){
+                    if ($cost->getYear() == $year){
+                        $currentYear[$driver->getId()] = ['name' => $driver->getDisplayName(), 'refuelcost' => $cost->getCredit() , 'hours' => $cost->getHours()];
+                        $totalRefuel += $cost->getCredit();
+                        $totalHours += $cost->getHours();
+                    }
+                }
+            }
+        }
+
+        // Division by Zero
+        if ($totalHours > 0){
+            $durchschnitt = round((float)$totalRefuel / (float)$totalHours, 2);
+        }
+
+        foreach ($currentYear as $key => $value){
+            $depit = round($durchschnitt * $value['hours'] - $value['refuelcost'], 2);
+            $currentYear[$key]['depit'] = $depit;
+            if ($depit > 0){
+                $currentYear[$key]['color'] = $hexGreen;
+            }else{
+                $currentYear[$key]['color'] = $hexRed;
+            }
+        }
+
+        return $this->render('default/auswertung.html.twig', array(
+            'year' => $year,
+            'list' => $currentYear,
+            'totalRefuel' => $totalRefuel,
+            'totalHours' => $totalHours,
+            'durchschnitt' => $durchschnitt
+        ));
     }
 
     /**
