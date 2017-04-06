@@ -5,7 +5,9 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="invoice-title">
-                    <h2>Kostenverteilung {{ year }}</h2>
+                    <h2>Kostenverteilung {{ year }}
+                        <button class="btn btn-default btn-sm" onclick="window.print()"><i class="fa fa-print"></i></button>
+                    </h2>
                     <hr>
                 </div>
             </div>
@@ -63,7 +65,7 @@
                     <h3 class="text-center">Rechnung</h3>
                     <hr>
                     <div class="text-center">
-                        <strong>Durchschnitt * Fahrstunden - Tankkosten</strong><br>
+                        <strong>Tankkosten - Durchschnitt * Fahrstunden</strong><br>
                     </div>
                 </div>
                 <div class="col-md-4 offset-md-2">

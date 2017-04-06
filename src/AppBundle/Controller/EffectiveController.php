@@ -48,7 +48,7 @@ class EffectiveController extends Controller
             $boat = $effective->getBoat();
 
             if ($boat->getIsAvailable()){
-                return new Response('Fehler');
+                return $this->render('error/notAvailable.html.twig');
             }
 
             //EntityManager definieren
@@ -127,6 +127,11 @@ class EffectiveController extends Controller
             $boat = $effective->getBoat();
 
             $hour = floatval($effective->getDrivingHour()) - floatval($boat->getDrivehour());
+
+            if ($hour < 0){
+                return $this->render('error/hoursError.html.twig');
+            }
+
             $boat->setDrivehour($effective->getDrivingHour());
             $boat->setIsAvailable(false);
             $effective->setDrivingHour(round($hour, 2));
@@ -144,6 +149,7 @@ class EffectiveController extends Controller
                 $hours = (float)$costs->getHours() + (float)$effective->getDrivingHour();
                 $costs->setHours($hours);
                 $em->persist($costs);
+                $isSet = true;
             } else {
                 //Hat Kosten
                 foreach ($costs as $cost) {

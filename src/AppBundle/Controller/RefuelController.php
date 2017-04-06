@@ -68,6 +68,7 @@ class RefuelController extends Controller
                 $costs->setYear($year);
                 $costs->setCredit($refuel->getRefuelCost());
                 $em->persist($costs);
+                $isSet = true;
             } else {
                 //Hat Kosten
                 foreach ($costs as $cost) {

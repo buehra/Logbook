@@ -116,7 +116,7 @@ class DefaultController extends Controller
         }
 
         foreach ($currentYear as $key => $value){
-            $depit = round($durchschnitt * $value['hours'] - $value['refuelcost'], 2);
+            $depit = round($value['refuelcost'] - $durchschnitt * $value['hours'], 2);
             $currentYear[$key]['depit'] = $depit;
             if ($depit > 0){
                 $currentYear[$key]['color'] = $hexGreen;
