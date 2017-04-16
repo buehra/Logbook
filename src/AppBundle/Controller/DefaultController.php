@@ -172,7 +172,7 @@ class DefaultController extends Controller
 
             return $this->redirectToRoute('homepage');
         }
-        return $this->render('user/userEdit.html.twig', array(
+        return $this->render('User/userEdit.html.twig', array(
             'user' => $driver,
             'edit_form' => $form->createView()
         ));
