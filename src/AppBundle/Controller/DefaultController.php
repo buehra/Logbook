@@ -6,6 +6,7 @@ use AppBundle\Entity\driver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class DefaultController extends Controller
 {
@@ -45,7 +46,7 @@ class DefaultController extends Controller
         //Geplant für heute
         $todayPlans = $this->getDoctrine()
             ->getManager()
-            ->createQuery('SELECT e FROM AppBundle:driving_plan e WHERE e.plane_date_from > CURRENT_DATE() OR e.plane_date_to > CURRENT_DATE()')
+            ->createQuery('SELECT e FROM AppBundle:driving_plan e WHERE e.plane_date_from >= CURRENT_DATE()')
             ->getResult();
 
         $plansCount = Count($todayPlans);

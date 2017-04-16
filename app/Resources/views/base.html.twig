@@ -10,10 +10,11 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 
     <!-- iOS Manifest -->
-    <link rel="apple-touch-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-startup-image" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('Logbook.png') }}">
+    <link rel="apple-touch-startup-image" href="{{ asset('Logbook.png') }}">
     <meta name="apple-mobile-web-app-title" content="Logbuch">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.5,user-scalable=no">
 
     <!-- Windows Phone Manifest -->
     <meta name="application-name" content="Logbuch"/>
@@ -22,12 +23,11 @@
 
     <!-- Android Manifest -->
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" sizes="192x192" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" sizes="192x192" href="{{ asset('Logbook.png') }}">
 
     <!-- Bootstrap Core CSS -->
     <link href="{{ asset('Public/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('Public/css/bootstrap-datetimepicker.css') }}" rel="stylesheet">
-    <link href="{{ asset('Public/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ asset('Public/css/sb-admin.css') }}" rel="stylesheet">
     <!-- Morris Charts CSS -->
@@ -121,8 +121,9 @@
 <script src="{{ asset('Public/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('Public/fullcalendar/moment.js') }}"></script>
 <script src="{{ asset('Public/js/bootstrap-datetimepicker.js') }}"></script>
-<script src="{{ asset('Public/js/bootstrap-datepicker.js') }}"></script>
-<script src="{{ asset('Public/locales/bootstrap-datepicker.de.min.js') }}"></script>
+
+<script src="{{ asset('Public/js/compressed.js') }}" type="text/javascript" charset="utf-8"></script>
+
 {% block javascripts %}{% endblock %}
 </body>
 </html>
