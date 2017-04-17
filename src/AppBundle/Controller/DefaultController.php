@@ -6,7 +6,7 @@ use AppBundle\Entity\driver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints\DateTime;
+use Forecast\Forecast;
 
 class DefaultController extends Controller
 {
@@ -65,6 +65,34 @@ class DefaultController extends Controller
             }
         }
 
+        //Weather forecast
+        $forecast = new Forecast('a182fe6731e040598bc8886f756ad6bb');
+        $data = $forecast->get('46.9667','8.3333', null, array('lang' => 'de', 'units' => 'auto'));
+        $daily = $data->daily->data;
+        $dailyWeather = Array();
+        $flag = 'X';
+        setlocale(LC_TIME, 'de_DE');
+        foreach ($daily as $key => $value){
+            $dailyWeather[$key]['day'] = strftime('%a',$value->time);
+            $dailyWeather[$key]['maxTemp'] = round($value->temperatureMax, 1);
+            $dailyWeather[$key]['minTemp'] = round($value->temperatureMin, 1);
+            $dailyWeather[$key]['icon'] = $value->icon;
+            if ($flag == 'X'){
+                $dailyWeather[$key]['class'] = 'bg';
+                $flag = '';
+            }else{
+                $dailyWeather[$key]['class'] = '';
+                $flag = 'X';
+            }
+
+        }
+
+        $currenlyWeather['day'] = strftime('%A',$data->currently->time);
+        $currenlyWeather['icon'] = $data->currently->icon;
+        $currenlyWeather['maxTemp'] = round($dailyWeather[0]['maxTemp'], 1);
+        $currenlyWeather['minTemp'] = round($dailyWeather[0]['minTemp'], 1);
+        $currenlyWeather['currentTemp'] = round($data->currently->temperature, 1);
+
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
             'aufsee' => $aufsee,
@@ -72,7 +100,8 @@ class DefaultController extends Controller
             'lastRefuel' => $lastRefuel,
             'todayPlans' => $plansCount,
             'chartValue' => $statHour,
-
+            'currentWeather' => $currenlyWeather,
+            'dailyWeather' => $dailyWeather
         ]);
     }
     /**

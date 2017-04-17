@@ -1,4 +1,7 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link href="{{ asset('Public/css/weather.css') }}" rel="stylesheet">
+{% endblock %}
 
 {% block body %}
     <!-- Page Heading -->
@@ -144,7 +147,7 @@
     <!-- /.row -->
 
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Fahrstunden ({{ "now"|date("Y") }})
@@ -162,27 +165,87 @@
                 </a>
             </div>
         </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-cloud fa-fw"></i> Wettervorschau
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="main-info">
+                        <div class="weather-top">
+                            <div class="weather-grids">
+                                <h3 class="fri">{{ currentWeather['day'] }} </h3>
+                                <h3>Wetter</h3>
+                            </div>
+                            <div class="weather-grids weather-mdl">
+                                <canvas class="{{ currentWeather['icon'] }}" width="70" height="70"></canvas>
+                            </div>
+                            <div class="weather-grids">
+                                <h4>Max {{ currentWeather['maxTemp'] }}°</h4>
+                                <h2>{{ currentWeather['currentTemp'] }}°C</h2>
+                                <h4>Min {{ currentWeather['minTemp'] }}°</h4>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="weather-bottom">
+                            <ul>
+                                {% for i in 0..4 %}
+                                    <li class="{{ dailyWeather[i]['class'] }}"><h4>{{ dailyWeather[i]['day'] }}</h4>
+                                        <figure class="icons">
+                                            <canvas class="{{ dailyWeather[i]['icon'] }}" width="40" height="40"></canvas>
+                                        </figure>
+                                        <h5>{{ dailyWeather[i]['maxTemp'] }}°C</h5>
+                                        <h6>{{ dailyWeather[i]['minTemp'] }}°C</h6>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- /.row -->
 
 
-
 {% endblock %}
 
-{% block javascripts %}
-    <!-- Charts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.8.2.min.js"></script>
-    <script src="{{ asset('Public/js/plugins/morris/morris.js') }}"></script>
+    {% block javascripts %}
+        <!-- Charts -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.8.2.min.js"></script>
+        <script src="{{ asset('Public/js/plugins/morris/morris.js') }}"></script>
+        <script src="{{ asset('Public/js/skycons.js') }}"></script>
 
-    <script>
-        Morris.Donut({
-            element: 'driving_hour',
-            data: [
-                {% for value in chartValue %}
-                {label: "{{ value['name'] }}", value: {{ value['hours'] }}},
-                {% endfor %}
-            ]
-        });
-    </script>
-{% endblock %}
+        <script>
+            Morris.Donut({
+                element: 'driving_hour',
+                data: [
+                    {% for value in chartValue %}
+                    {label: "{{ value['name'] }}", value: {{ value['hours'] }}},
+                    {% endfor %}
+                ]
+            });
+        </script>
+        <script>
+            var icons = new Skycons({"color": "#f5f5f5"}),
+                list = [
+                    "clear-day", "clear-night", "partly-cloudy-day",
+                    "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+                    "fog"
+                ],
+                i;
+
+            for(i = list.length; i--; ) {
+                var weatherType = list[i],
+                    elements = document.getElementsByClassName( weatherType );
+                for (e = elements.length; e--;){
+                    icons.set( elements[e], weatherType );
+                }
+            }
+
+            icons.play();
+        </script>
+    {% endblock %}

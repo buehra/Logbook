@@ -26,7 +26,11 @@
         "twitter/bootstrap": "3.*",
         "components/jquery": "1.11.1",
         "symfony/assetic-bundle": "^2.8",
-        "vich/uploader-bundle": "^1.4"
+        "vich/uploader-bundle": "^1.4",
+        "guhelski/forecast-php": "^1.1",
+        "mailgun/mailgun-php": "^2.3",
+        "php-http/curl-client": "^1.7",
+        "guzzlehttp/psr7": "^1.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

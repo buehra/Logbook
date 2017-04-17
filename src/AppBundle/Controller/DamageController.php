@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use \AppBundle\Entity\damage;
+use Mailgun\Mailgun;
 
 class DamageController extends Controller
 {
@@ -38,7 +39,7 @@ class DamageController extends Controller
      */
     public function damageCreate(Request $request, damage $damage = null)
     {
-        if ($damage == null){
+        if ($damage == null) {
             $damage = new damage();
         }
 
@@ -57,6 +58,17 @@ class DamageController extends Controller
             $em->persist($damage);
             //Save
             $em->flush();
+
+            # Instantiate the client.
+            $mgClient = new Mailgun('key-81d4a56ba60584c01f887db6520dda92');
+            $domain = "sandboxd23663547c4049edaff699b19e32ee51.mailgun.org";
+
+            # Make the call to the client.
+            $result = $mgClient->sendMessage("$domain",
+                array('from' => 'Mailgun Sandbox <postmaster@sandboxd23663547c4049edaff699b19e32ee51.mailgun.org>',
+                    'to' => 'Bühlmann Raphael <raphael.buehlmann@hotmail.com>',
+                    'subject' => 'Hello Bühlmann Raphael',
+                    'text' => 'Congratulations Bühlmann Raphael, you just sent an email with Mailgun!  You are truly awesome! '));
 
             return $this->redirectToRoute('damage_show');
         }
