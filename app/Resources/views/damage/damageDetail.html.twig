@@ -25,16 +25,37 @@
         </tr>
         <tr>
             <th>Beschreibung:</th>
-            <td>{{ damage.place }}</td>
+            <td>{{ damage.description }}</td>
         </tr>
         <tr>
             <th>Bild:</th>
-            <td><a href="{{ vich_uploader_asset(damage, 'imageFile', 'AppBundle\\Entity\\damage') }}">
+            <td><a href=" " data-toggle="modal" data-target="#showImage">
                     <img style="max-width: 400px; width: 100%;" src="{{ vich_uploader_asset(damage, 'imageFile', 'AppBundle\\Entity\\damage') }}" alt="{{ damage.place }}" />
                 </a></td>
         </tr>
         </tbody>
     </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="showImage" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{ damage.boat.fullname }}</h4>
+                </div>
+                <div class="modal-body">
+                    <img style="max-width: 800px; width: 100%;" src="{{ vich_uploader_asset(damage, 'imageFile', 'AppBundle\\Entity\\damage') }}" alt="{{ damage.place }}" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Schliessen</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <a href="{{ path('damage_show') }}" class="btn btn-default">Zurück</a>
 
