@@ -11,16 +11,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use \AppBundle\Entity\damage;
-use Mailgun\Mailgun;
 
 class DamageController extends Controller
 {
     /**
      * @Route("/damage", name="damage_show")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function damageShow(Request $request)
+    public function damageShow()
     {
         $repository = $this->getDoctrine()->getRepository('AppBundle:damage');
         $damage = $repository->findAll();
@@ -59,12 +57,21 @@ class DamageController extends Controller
             //Save
             $em->flush();
 
+            $helper = $this->container->get('vich_uploader.templating.helper.uploader_helper');
+            $path = $helper->asset($damage, 'imageFile');
 
             $message = \Swift_Message::newInstance()
-                ->setSubject('Hello Email')
-                ->setFrom('aphael.bueh@gmail.com')
-                ->setTo('raphael.buehlmann@hotmail.com')
-                ->setBody('Test Mail');
+                ->setSubject('Unfall: ' . $damage->getDriver()->getDisplayName() . ', ' . $damage->getBoat()->getFullname())
+                ->setTo('hubert.buehlmann@garage-flury.ch')
+                ->setBody('<p><span style="font-size: 15pt;"><strong>Unfall im Logbuch</strong></span></p>
+                           <p>Datum: '.$damage->getDamageDate()->format('d.m.Y').'</p>
+                           <p>Fahrer: '.$damage->getDriver()->getDisplayName().'</p>
+                           <p>Boot: '.$damage->getBoat()->getFullname().'</p>
+                           <p>Unfallort: '.$damage->getPlace().'</p>
+                           <p>Beschreibung: '.$damage->getDescription().'</p>
+                           <p><a href="http://'.$_SERVER['HTTP_HOST'].$path.'" target="_blank">Unfallfoto</a></p>',
+                    'text/html'
+                    );
             $this->get('mailer')->send($message);
 
             return $this->redirectToRoute('damage_show');
