@@ -59,16 +59,13 @@ class DamageController extends Controller
             //Save
             $em->flush();
 
-            # Instantiate the client.
-            $mgClient = new Mailgun('key-81d4a56ba60584c01f887db6520dda92');
-            $domain = "sandboxd23663547c4049edaff699b19e32ee51.mailgun.org";
 
-            # Make the call to the client.
-            $result = $mgClient->sendMessage("$domain",
-                array('from' => 'Mailgun Sandbox <postmaster@sandboxd23663547c4049edaff699b19e32ee51.mailgun.org>',
-                    'to' => 'Bühlmann Raphael <raphael.buehlmann@hotmail.com>',
-                    'subject' => 'Hello Bühlmann Raphael',
-                    'text' => 'Congratulations Bühlmann Raphael, you just sent an email with Mailgun!  You are truly awesome! '));
+            $message = \Swift_Message::newInstance()
+                ->setSubject('Hello Email')
+                ->setFrom('aphael.bueh@gmail.com')
+                ->setTo('raphael.buehlmann@hotmail.com')
+                ->setBody('Test Mail');
+            $this->get('mailer')->send($message);
 
             return $this->redirectToRoute('damage_show');
         }

@@ -3,12 +3,20 @@
 {% block body %}
     <h1>User</h1>
 
-    {{ form_start(edit_form) }}
-    {{ form_widget(edit_form) }}
-    </br>
-    <input id="submitter" type="submit" class="btn btn-default" value="Speichern"/>
-    <a href="{{ path('homepage') }}" class="btn btn-default">Zurück</a>
-    {{ form_end(edit_form) }}
+    {% if app.user.getId == user.id %}
+
+        {{ form_start(edit_form) }}
+        {{ form_widget(edit_form) }}
+        </br>
+        <input id="submitter" type="submit" class="btn btn-default" value="Speichern"/>
+        <a href="{{ path('homepage') }}" class="btn btn-default">Zurück</a>
+        {{ form_end(edit_form) }}
+
+        {% else %}
+
+        <h3>Keine Berechtigung!</h3>
+
+    {% endif %}
 
 
 {% endblock %}
