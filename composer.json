@@ -24,7 +24,7 @@
         "incenteev/composer-parameter-handler": "^2.0",
         "twig/twig": "^1.0||^2.0",
         "twitter/bootstrap": "3.*",
-        "components/jquery": "1.11.1",
+        "components/jquery": "3.5.1",
         "symfony/assetic-bundle": "^2.8",
         "vich/uploader-bundle": "^1.4",
         "guhelski/forecast-php": "^1.1"
